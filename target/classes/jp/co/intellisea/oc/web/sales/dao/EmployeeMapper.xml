@@ -14,6 +14,7 @@
     <!--@mbg.generated-->
     employee_id, "name", mail, employee_code, duty
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--@mbg.generated-->
     select 
@@ -99,4 +100,9 @@
       duty = #{duty,jdbcType=VARCHAR}
     where employee_id = #{employeeId,jdbcType=INTEGER}
   </update>
+  <select id="allEmployee" resultMap="BaseResultMap">
+
+    select *
+    from employee
+  </select>
 </mapper>

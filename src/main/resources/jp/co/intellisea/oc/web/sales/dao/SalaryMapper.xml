@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="jp.co.intellisea.oc.web.sales.dao.SalaryMapper">
+
+  <resultMap id="salaryResultMap" type="jp.co.intellisea.oc.web.sales.entity.Salary">
+    <id property="id" column="id"/>
+    <result property="year" column="year"/>
+    <result property="month" column="month"/>
+    <result property="paymentDate" column="payment_date"/>
+    <result property="baseSalary" column="base_salary"/>
+    <result property="overtimeAllowance" column="overtime_allowance"/>
+    <result property="commutingAllowance" column="commuting_allowance"/>
+    <result property="healthInsurance" column="health_insurance"/>
+    <result property="pension" column="pension"/>
+    <result property="employmentInsurance" column="employment_insurance"/>
+    <result property="incomeTax" column="income_tax"/>
+    <result property="residentTax" column="resident_tax"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+
+    <association property="employee" javaType="jp.co.intellisea.oc.web.sales.entity.Employee">
+      <id property="employeeId" column="employee_id"/>
+      <result property="name" column="employee_name"/>
+      <result property="mail" column="mail"/>
+      <result property="employeeCode" column="employee_code"/>
+      <result property="duty" column="duty"/>
+    </association>
+  </resultMap>
+
+  <!-- 插入薪资记录（利用数据库默认值） -->
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    INSERT INTO salary (
+    employee_id,
+    year,
+    month,
+    payment_date,
+    base_salary,
+    overtime_allowance,
+    commuting_allowance,
+    health_insurance,
+    pension,
+    employment_insurance,
+    income_tax,
+    resident_tax
+    <!-- 省略created_at/updated_at 使用数据库默认值 -->
+    ) VALUES (
+    #{employee.employeeId},
+    #{year},
+    #{month},
+    #{paymentDate},
+    #{baseSalary},
+    #{overtimeAllowance},
+    #{commutingAllowance},
+    #{healthInsurance},
+    #{pension},
+    #{employmentInsurance},
+    #{incomeTax},
+    #{residentTax}
+    )
+  </insert>
+
+  <!-- 批量插入 -->
+  <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    INSERT INTO salary (
+    employee_id, year, month, payment_date,
+    base_salary, overtime_allowance, commuting_allowance,
+    health_insurance, pension, employment_insurance,
+    income_tax, resident_tax
+    ) VALUES
+    <foreach collection="salaries" item="salary" separator=",">
+      (
+      #{salary.employee.employeeId},
+      #{salary.year},
+      #{salary.month},
+      #{salary.paymentDate},
+      #{salary.baseSalary},
+      #{salary.overtimeAllowance},
+      #{salary.commutingAllowance},
+      #{salary.healthInsurance},
+      #{salary.pension},
+      #{salary.employmentInsurance},
+      #{salary.incomeTax},
+      #{salary.residentTax}
+      )
+    </foreach>
+  </insert>
+
+  <!-- 根据ID查询 -->
+  <select id="findById" resultMap="salaryResultMap">
+    SELECT
+      s.*,
+      e.name AS employee_name,
+      e.mail,
+      e.employee_code,
+      e.duty
+    FROM salary s
+           JOIN employee e ON s.employee_id = e.employee_id
+    WHERE s.id = #{id}
+  </select>
+
+  <!-- 更新记录（排除不可变字段） -->
+  <update id="update">
+    UPDATE salary SET
+    payment_date = #{paymentDate},
+    base_salary = #{baseSalary},
+    overtime_allowance = #{overtimeAllowance},
+    commuting_allowance = #{commutingAllowance},
+    health_insurance = #{healthInsurance},
+    pension = #{pension},
+    employment_insurance = #{employmentInsurance},
+    income_tax = #{incomeTax},
+    resident_tax = #{residentTax},
+    updated_at = CURRENT_TIMESTAMP  <!-- 使用数据库函数更新 -->
+    WHERE id = #{id}
+  </update>
+
+  <!-- 删除记录 -->
+  <delete id="delete">
+    DELETE FROM salary WHERE id = #{id}
+  </delete>
+
+  <!-- 按员工ID查询 -->
+  <select id="findByEmployeeId" resultMap="salaryResultMap">
+    SELECT
+      s.*,
+      e.name AS employee_name,
+      e.mail,
+      e.employee_code,
+      e.duty
+    FROM salary s
+           JOIN employee e ON s.employee_id = e.employee_id
+    WHERE s.employee_id = #{employeeId}
+    ORDER BY s.year DESC, s.month DESC
+  </select>
+
+  <!-- 按年月查询 -->
+  <select id="findByYearAndMonth" resultMap="salaryResultMap">
+    SELECT
+      s.*,
+      e.name AS employee_name,
+      e.mail,
+      e.employee_code,
+      e.duty
+    FROM salary s
+           JOIN employee e ON s.employee_id = e.employee_id
+    WHERE s.year = #{year} AND s.month = #{month}
+  </select>
+
+  <!-- 检查唯一性约束 -->
+  <select id="existsByEmployeeAndPeriod" resultType="boolean">
+    SELECT EXISTS(
+      SELECT 1 FROM salary
+      WHERE employee_id = #{employeeId}
+              AND year = #{year}
+              AND month = #{month}
+    )
+  </select>
+</mapper>

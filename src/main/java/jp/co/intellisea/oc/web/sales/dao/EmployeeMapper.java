@@ -2,6 +2,8 @@ package jp.co.intellisea.oc.web.sales.dao;
 
 import jp.co.intellisea.oc.web.sales.entity.Employee;
 
+import java.util.List;
+
 public interface EmployeeMapper {
     int deleteByPrimaryKey(Integer employeeId);
 
@@ -14,4 +16,6 @@ public interface EmployeeMapper {
     int updateByPrimaryKeySelective(Employee record);
 
     int updateByPrimaryKey(Employee record);
+
+    List<Employee> allEmployee();
 }

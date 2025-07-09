@@ -16,6 +16,4 @@ public interface ContactService {
     boolean updatePrimaryKey(Contact record);
 
     List<Contact> selectByFuzzySearch(String search);
-
-    byte[] generateContactPdfFromContact();
 }
