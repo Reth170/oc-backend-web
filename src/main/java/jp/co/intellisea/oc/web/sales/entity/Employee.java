@@ -1,13 +1,11 @@
 package jp.co.intellisea.oc.web.sales.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "employee")
 public class Employee {
@@ -30,5 +28,4 @@ public class Employee {
     @Size(max = 255)
     @Column(name = "duty")
     private String duty;
-
 }

@@ -4,7 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("jp.co.intellisea.oc.web.sales.dao")
+@MapperScan({"jp.co.intellisea.oc.web.sales.dao", "jp.co.intellisea.oc.web.auth.dao"})
 public class MyBatisConfig {
 
 //	  @Bean

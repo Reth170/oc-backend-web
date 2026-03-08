@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.intellisea.oc.web.auth.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="jp.co.intellisea.oc.web.auth.entity.User">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="password_hash" jdbcType="VARCHAR" property="passwordHash" />
+        <result column="company" jdbcType="VARCHAR" property="company" />
+        <result column="is_active" jdbcType="BOOLEAN" property="isActive" />
+        <result column="failed_login_attempts" jdbcType="INTEGER" property="failedLoginAttempts" />
+        <result column="locked_until" jdbcType="TIMESTAMP" property="lockedUntil" />
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, email, password_hash, company, is_active,
+        failed_login_attempts, locked_until, created_at, updated_at
+    </sql>
+
+    <insert id="insert" parameterType="jp.co.intellisea.oc.web.auth.entity.User">
+        INSERT INTO users (
+            id, username, email, password_hash, company,
+            is_active, failed_login_attempts, locked_until,
+            created_at, updated_at
+        ) VALUES (
+            #{id,jdbcType=VARCHAR},
+            #{username,jdbcType=VARCHAR},
+            #{email,jdbcType=VARCHAR},
+            #{passwordHash,jdbcType=VARCHAR},
+            #{company,jdbcType=VARCHAR},
+            #{isActive,jdbcType=BOOLEAN},
+            #{failedLoginAttempts,jdbcType=INTEGER},
+            #{lockedUntil,jdbcType=TIMESTAMP},
+            #{createdAt,jdbcType=TIMESTAMP},
+            #{updatedAt,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <insert id="insertSelective" parameterType="jp.co.intellisea.oc.web.auth.entity.User">
+        INSERT INTO users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="username != null">username,</if>
+            <if test="email != null">email,</if>
+            <if test="passwordHash != null">password_hash,</if>
+            <if test="company != null">company,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="failedLoginAttempts != null">failed_login_attempts,</if>
+            <if test="lockedUntil != null">locked_until,</if>
+            <if test="createdAt != null">created_at,</if>
+            <if test="updatedAt != null">updated_at,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=VARCHAR},</if>
+            <if test="username != null">#{username,jdbcType=VARCHAR},</if>
+            <if test="email != null">#{email,jdbcType=VARCHAR},</if>
+            <if test="passwordHash != null">#{passwordHash,jdbcType=VARCHAR},</if>
+            <if test="company != null">#{company,jdbcType=VARCHAR},</if>
+            <if test="isActive != null">#{isActive,jdbcType=BOOLEAN},</if>
+            <if test="failedLoginAttempts != null">#{failedLoginAttempts,jdbcType=INTEGER},</if>
+            <if test="lockedUntil != null">#{lockedUntil,jdbcType=TIMESTAMP},</if>
+            <if test="createdAt != null">#{createdAt,jdbcType=TIMESTAMP},</if>
+            <if test="updatedAt != null">#{updatedAt,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="java.util.UUID" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM users
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM users
+        WHERE username = #{username,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM users
+        WHERE email = #{email,jdbcType=VARCHAR}
+    </select>
+
+    <select id="existsByUsername" parameterType="java.lang.String" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM users
+            WHERE username = #{username,jdbcType=VARCHAR}
+        )
+    </select>
+
+    <select id="existsByEmail" parameterType="java.lang.String" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM users
+            WHERE email = #{email,jdbcType=VARCHAR}
+        )
+    </select>
+
+    <update id="updateByPrimaryKeySelective" parameterType="jp.co.intellisea.oc.web.auth.entity.User">
+        UPDATE users
+        <set>
+            <if test="username != null">username = #{username,jdbcType=VARCHAR},</if>
+            <if test="email != null">email = #{email,jdbcType=VARCHAR},</if>
+            <if test="passwordHash != null">password_hash = #{passwordHash,jdbcType=VARCHAR},</if>
+            <if test="company != null">company = #{company,jdbcType=VARCHAR},</if>
+            <if test="isActive != null">is_active = #{isActive,jdbcType=BOOLEAN},</if>
+            <if test="failedLoginAttempts != null">failed_login_attempts = #{failedLoginAttempts,jdbcType=INTEGER},</if>
+            <if test="lockedUntil != null">locked_until = #{lockedUntil,jdbcType=TIMESTAMP},</if>
+            <if test="createdAt != null">created_at = #{createdAt,jdbcType=TIMESTAMP},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt,jdbcType=TIMESTAMP},</if>
+        </set>
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="jp.co.intellisea.oc.web.auth.entity.User">
+        UPDATE users
+        SET username = #{username,jdbcType=VARCHAR},
+            email = #{email,jdbcType=VARCHAR},
+            password_hash = #{passwordHash,jdbcType=VARCHAR},
+            company = #{company,jdbcType=VARCHAR},
+            is_active = #{isActive,jdbcType=BOOLEAN},
+            failed_login_attempts = #{failedLoginAttempts,jdbcType=INTEGER},
+            locked_until = #{lockedUntil,jdbcType=TIMESTAMP},
+            created_at = #{createdAt,jdbcType=TIMESTAMP},
+            updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="incrementFailedLoginAttempts">
+        UPDATE users
+        SET failed_login_attempts = COALESCE(failed_login_attempts, 0) + #{attempts,jdbcType=INTEGER},
+            locked_until = #{lockedUntil,jdbcType=TIMESTAMP},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="resetFailedLoginAttempts">
+        UPDATE users
+        SET failed_login_attempts = 0,
+            locked_until = NULL,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>
