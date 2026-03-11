@@ -1,5 +1,6 @@
 package jp.co.intellisea.oc.web.sales.service.impl;
 
+import jp.co.intellisea.oc.web.sales.common.PdfGenerator;
 import jp.co.intellisea.oc.web.sales.dao.ContactMapper;
 import jp.co.intellisea.oc.web.sales.entity.Contact;
 import jp.co.intellisea.oc.web.sales.service.ContactService;
@@ -33,4 +34,12 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public List<Contact> selectByFuzzySearch(String search) { return contactMapper.selectByFuzzySearch(search); }
+
+    @Override
+    public byte[] generateContactPdfFromContact() {
+        List<Contact> contacts = contactMapper.allContact();
+        String[] headers = {"ID", "Name", "Phone Number", "Mail", "Duties"};
+        String[] getters = {"getContactId", "getName", "getPhoneNumber", "getMail", "getDuties"};
+        return PdfGenerator.generateTablePdf("Contact List", headers, getters, contacts);
+    }
 }

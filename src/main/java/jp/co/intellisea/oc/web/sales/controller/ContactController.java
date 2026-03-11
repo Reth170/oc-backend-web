@@ -6,6 +6,10 @@ import jp.co.intellisea.oc.web.sales.common.SuccessMessage;
 import jp.co.intellisea.oc.web.sales.entity.Contact;
 import jp.co.intellisea.oc.web.sales.service.impl.ContactServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -73,5 +77,14 @@ public class ContactController {
         if(res)
             return new SuccessMessage("add contact successful!", true).getMessage();
         return new ErrorMessage("add contact error.").getMessage();
+    }
+
+    @GetMapping("/contact/pdfOfContact")
+    public ResponseEntity<byte[]> generateContactPdf() {
+        byte[] pdfContent = contactService.generateContactPdfFromContact();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "contacts.pdf");
+        return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
     }
 }
